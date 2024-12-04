@@ -47,7 +47,7 @@ def test_scipy():
     return interp_scipy(xi)[0]
 
 def test():
-    return interp(xi)
+    return interp.evaluate(xi)
 
 assert np.isclose(test_scipy(),test())
 
@@ -62,5 +62,5 @@ t = timer.timeit(number=n)/n
 print('mlinterpy is %i times faster than scipy'%(t_scipy/t))
 ```
 
-The result is `mlinterpy is 123 times faster than scipy`
+The result: `mlinterpy is 512 times faster than scipy`
 
