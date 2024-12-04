@@ -1,13 +1,6 @@
 
-CPMAddPackage(
-  NAME mlinterp
-  VERSION 0.1.1
-  GITHUB_REPOSITORY "parsiad/mlinterp"
-  GIT_TAG "v0.1.1"
-  DOWNLOAD_ONLY ON
-)
 add_library(mlinterp_c_api mlinterp_c_api.cpp)
-target_include_directories(mlinterp_c_api PUBLIC ${mlinterp_SOURCE_DIR}/mlinterp)
+target_include_directories(mlinterp_c_api PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if (NOT SKBUILD)
   if (NOT DEFINED SKBUILD_CMAKE_MODULE_DIR)
