@@ -1,6 +1,6 @@
 # mlinterp
 
-This package is a Python wrapper to the C++ [mlinterp](https://github.com/parsiad/mlinterp) multidimensional linear interpolation library. The interface is designed to be very similar to the Scipy [RegularGridInterpolator](https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.RegularGridInterpolator.html), when initialized with `method='linear'`, `bounds_error=False`, and `fill_value=nan`. The benefit of the `mlinterp` version of `RegularGridInterpolator` is that it is a factor of >100x faster than Scipy when interpolating one point at a time.
+This package is a Python wrapper to the C++ [mlinterp](https://github.com/parsiad/mlinterp) multidimensional linear interpolation library. The interface is designed to be very similar to the Scipy [RegularGridInterpolator](https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.RegularGridInterpolator.html), when initialized with `method='linear'`, `bounds_error=False`, and `fill_value=nan`. The benefit of the `mlinterp` version of `RegularGridInterpolator` is that it is a factor of >100x faster than Scipy when interpolating one point at a time (i.e. non-vectorized usage).
 
 ## Usage
 
