@@ -23,7 +23,7 @@ values = f(xg, yg, zg)
 interp = RegularGridInterpolator(points, values)
 
 xi = np.array([2.1, 6.2, 8.3])
-print('%.1f'%interp(xi)) # interpolated value
+print('%.1f'%interp(xi)[0]) # interpolated value
 print('%.1f'%f(2.1, 6.2, 8.3)) # function value
 ```
 
