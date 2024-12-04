@@ -88,7 +88,7 @@ def test():
     all_gridvals = (x1,x2,x3,x4,x5,x6,x7,x8,x9,x10)
 
     fmt = '{:15}'
-    tmp = fmt.format('ndim')+fmt.format('vectorized')+fmt.format('scipy init')+fmt.format('mlinterp init')+fmt.format('scipy/mlinterp')+fmt.format('scipy calc')+fmt.format('mlinterp calc')+fmt.format('scipy/mlinterp')
+    tmp = fmt.format('ndim')+fmt.format('vectorized')+fmt.format('scipy init')+fmt.format('mlinterpy init')+fmt.format('scipy/mlinterpy')+fmt.format('scipy calc')+fmt.format('mlinterpy calc')+fmt.format('scipy/mlinterpy')
     print(tmp)
 
     for i in range(1,len(all_gridvals)+1):
