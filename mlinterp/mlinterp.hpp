@@ -46,7 +46,7 @@ struct helper<T, T1, T2, Args...> : helper<T, Args...> {
       : helper<T, Args...>(args...), xd(xd), xi(xi) {}
 
   template <typename Index>
-  void run(const Index *nd, Index n, Index *indices, T *weights) {
+  inline void run(const Index *nd, Index n, Index *indices, T *weights) {
     // Must have at least one point per axis
     assert(*nd > 0);
 
