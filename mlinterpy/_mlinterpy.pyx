@@ -72,8 +72,14 @@ cdef class RegularGridInterpolator:
         raise ValueError('Some of the arrays in `points` are not sorted')
 
     assert values.dtype == np.double, "`values` must have have dtype `np.double`"
-    cdef double *fd = <double *> values.data
     cdef int n1 = values.size
+    cdef double *fd
+    cdef ndarray values_copy
+    if np.PyArray_IS_C_CONTIGUOUS(values):
+      fd = <double *> values.data
+    else:
+      values_copy = np.ascontiguousarray(values)
+      fd = <double *> values_copy.data
     self.fd = <double *> malloc(n1 * sizeof(double))
     for i in range(n1):
       self.fd[i] = fd[i]
