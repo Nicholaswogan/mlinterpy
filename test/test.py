@@ -64,7 +64,7 @@ def do_test(gridvals, n, vectorized):
     t2_init = np.maximum(t6 - t5,1e-100)
     t2_calc = np.maximum(t8 - t7,1e-100)
 
-    fmt = '{:15}'
+    fmt = '{:16}'
     tmp = fmt.format('%i'%(len(gridvals))) + fmt.format('%r'%(vectorized)) + fmt.format('%.1e'%(t1_init)) + fmt.format('%.1e'%(t2_init)) + fmt.format('%.3f'%(t1_init/t2_init)) + fmt.format('%.1e'%(t1_calc)) + fmt.format('%.1e'%(t2_calc)) + fmt.format('%.1f'%(t1_calc/t2_calc))
     print(tmp)
 
@@ -87,7 +87,7 @@ def test():
     x10 = np.arange(1.0, 10.0, 2.0)
     all_gridvals = (x1,x2,x3,x4,x5,x6,x7,x8,x9,x10)
 
-    fmt = '{:15}'
+    fmt = '{:16}'
     tmp = fmt.format('ndim')+fmt.format('vectorized')+fmt.format('scipy init')+fmt.format('mlinterpy init')+fmt.format('scipy/mlinterpy')+fmt.format('scipy calc')+fmt.format('mlinterpy calc')+fmt.format('scipy/mlinterpy')
     print(tmp)
 
