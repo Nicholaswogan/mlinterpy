@@ -2,7 +2,7 @@ import numpy as np
 from scipy import interpolate
 from mlinterpy import RegularGridInterpolator
 from copy import deepcopy
-import time
+import timeit
 
 def make_data(gridvals):
     gridshape = tuple([len(a) for a in gridvals])
@@ -28,51 +28,56 @@ def do_interp2(interp, inputs):
         res[i] = interp.evaluate(inputs[i,:])
     return res
 
-def do_test(gridvals, n, vectorized):
+def timefunc(func):
+    timer = timeit.Timer(func)
+    number, _ = timer.autorange()
+    np.maximum(number,1)
+    return timer.timeit(number=number)/number
+
+def do_test(gridvals, n, vectorized, time):
+    np.random.seed(0)
+
     vals = make_data(gridvals)
     inputs = make_inputs(gridvals, n)
     
-    t1 = time.time()
-    interp1 = interpolate.RegularGridInterpolator(deepcopy(gridvals), vals.copy(), method='linear')
-    t2 = time.time()
+    tmp = lambda: interpolate.RegularGridInterpolator(deepcopy(gridvals), vals.copy())
+    interp1 = tmp()
+    if time:
+        t1_init = timefunc(tmp)
 
     if vectorized:
-        t3 = time.time()
-        res1 = interp1(inputs)
-        t4 = time.time()
+        tmp = lambda: interp1(inputs)
     else:
-        t3 = time.time()
-        res1 = do_interp1(interp1, inputs)
-        t4 = time.time()
+        tmp = lambda: do_interp1(interp1, inputs)
 
-    t5 = time.time()
-    interp2 = RegularGridInterpolator(gridvals, vals)
-    t6 = time.time()
+    res1 = tmp()
+    if time:
+        t1_calc = timefunc(tmp)
+
+    tmp = lambda: RegularGridInterpolator(gridvals, vals)
+    interp2 = tmp()
+    if time:
+        t2_init = timefunc(tmp)
 
     if vectorized:
-        t7 = time.time()
-        res2 = interp2.evaluate_vector(inputs)
-        t8 = time.time()
+        tmp = lambda: interp2(inputs)
     else:
-        t7 = time.time()
-        res2 = do_interp2(interp2, inputs)
-        t8 = time.time()
+        tmp = lambda: do_interp2(interp2, inputs)
 
-    t1_init = np.maximum(t2 - t1,1e-100)
-    t1_calc = np.maximum(t4 - t3,1e-100)
+    res2 = tmp()
+    if time:
+        t2_calc = timefunc(tmp)
 
-    t2_init = np.maximum(t6 - t5,1e-100)
-    t2_calc = np.maximum(t8 - t7,1e-100)
-
-    fmt = '{:16}'
-    tmp = fmt.format('%i'%(len(gridvals))) + fmt.format('%r'%(vectorized)) + fmt.format('%.1e'%(t1_init)) + fmt.format('%.1e'%(t2_init)) + fmt.format('%.3f'%(t1_init/t2_init)) + fmt.format('%.1e'%(t1_calc)) + fmt.format('%.1e'%(t2_calc)) + fmt.format('%.1f'%(t1_calc/t2_calc))
-    print(tmp)
+    if time:
+        fmt = '{:16}'
+        tmp = fmt.format('%i'%(len(gridvals))) + fmt.format('%r'%(vectorized)) + fmt.format('%.1e'%(t1_init)) + fmt.format('%.1e'%(t2_init)) + fmt.format('%.3f'%(t1_init/t2_init)) + fmt.format('%.1e'%(t1_calc)) + fmt.format('%.1e'%(t2_calc)) + fmt.format('%.1f'%(t1_calc/t2_calc))
+        print(tmp)
 
     assert np.allclose(res1, res2, atol=1e-100, rtol=1e-10)
 
 def test():
-    np.random.seed(0)
 
+    time = False
     n = 100
 
     x1 = np.arange(1.0, 10.0, 2.0)
@@ -87,14 +92,15 @@ def test():
     x10 = np.arange(1.0, 10.0, 2.0)
     all_gridvals = (x1,x2,x3,x4,x5,x6,x7,x8,x9,x10)
 
-    fmt = '{:16}'
-    tmp = fmt.format('ndim')+fmt.format('vectorized')+fmt.format('scipy init')+fmt.format('mlinterpy init')+fmt.format('scipy/mlinterpy')+fmt.format('scipy calc')+fmt.format('mlinterpy calc')+fmt.format('scipy/mlinterpy')
-    print(tmp)
+    if time:
+        fmt = '{:16}'
+        tmp = fmt.format('ndim')+fmt.format('vectorized')+fmt.format('scipy init')+fmt.format('mlinterpy init')+fmt.format('scipy/mlinterpy')+fmt.format('scipy calc')+fmt.format('mlinterpy calc')+fmt.format('scipy/mlinterpy')
+        print(tmp)
 
     for i in range(1,len(all_gridvals)+1):
         gridvals = all_gridvals[:i]
-        do_test(gridvals, n, False)
-        do_test(gridvals, n, True)
+        do_test(gridvals, n, False, time)
+        do_test(gridvals, n, True, time)
 
 if __name__ == '__main__':
     test()
