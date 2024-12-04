@@ -36,3 +36,31 @@ The result is
 125.5
 ```
 
+The code below compares with the scipy `RegularGridInterpolator`:
+
+```python
+from scipy import interpolate
+import timeit
+
+interp_scipy = interpolate.RegularGridInterpolator(points, values)
+def test_scipy():
+    return interp_scipy(xi)[0]
+
+def test():
+    return interp(xi)
+
+assert np.isclose(test_scipy(),test())
+
+timer = timeit.Timer(test_scipy)
+n, _ = timer.autorange()
+t_scipy = timer.timeit(number=n)/n
+
+timer = timeit.Timer(test)
+n, _ = timer.autorange()
+t = timer.timeit(number=n)/n
+
+print('mlinterpy is %i times faster than scipy'%(t_scipy/t))
+```
+
+The result is `mlinterpy is 123 times faster than scipy`
+

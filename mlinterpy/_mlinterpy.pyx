@@ -89,6 +89,19 @@ cdef class RegularGridInterpolator:
       free(self.fd)
 
   def evaluate_vector(self, ndarray[double, ndim=2] xi):
+    """
+    Interpolate at a many set of values `xi`.
+
+    Parameters
+    ----------
+    xi : ndarray[double, ndim=2]
+        The coordinates to evaluate the interpolator at.
+
+    Returns
+    -------
+    fi : ndarray[double, ndim=1]
+        Interpolated values at `xi`.
+    """
 
     cdef int ni = xi.shape[0]
     assert xi.shape[1] == self.n, "Input `xi` has the wrong dimension"
@@ -109,6 +122,19 @@ cdef class RegularGridInterpolator:
     return fi
 
   def evaluate(self, ndarray[double, ndim=1] xi):
+    """
+    Interpolate at a single set of values `xi`.
+
+    Parameters
+    ----------
+    xi : ndarray[double, ndim=1]
+        The coordinates to evaluate the interpolator at.
+
+    Returns
+    -------
+    fi : float
+        Interpolated value at `xi`.
+    """
 
     assert xi.shape[0] == self.n, "Input `xi` has the wrong dimension"
     cdef double fi
@@ -138,7 +164,7 @@ cdef class RegularGridInterpolator:
 
     Returns
     -------
-    fi : float
+    fi : ndarray[double, ndim=1]
         Interpolated values at `xi`.
     """
 
