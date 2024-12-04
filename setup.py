@@ -3,13 +3,13 @@ from skbuild import setup
 with open("CMakeLists.txt",'r') as fil:
     lines = fil.readlines()
     for line in lines:
-        if line.startswith("project(MLINTERP"):
+        if line.startswith("project(MLINTERPY"):
             version = line.split('"')[1]
             break
             
 setup(
-    name="mlinterp",
-    packages=['mlinterp'],
+    name="mlinterpy",
+    packages=['mlinterpy'],
     python_requires='>=3.6',
     version=version,
     license="GNU General Public License v3.0",

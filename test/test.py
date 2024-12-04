@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import interpolate
-from mlinterp import RegularGridInterpolator
+from mlinterpy import RegularGridInterpolator
 from copy import deepcopy
 import time
 

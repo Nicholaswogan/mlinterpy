@@ -20,16 +20,16 @@ find_package(PythonExtensions REQUIRED)
 find_package(NumPy REQUIRED)
 find_package(Cython REQUIRED)
 
-add_cython_target(_mlinterp _mlinterp.pyx)
-add_library(_mlinterp MODULE ${_mlinterp})
-python_extension_module(_mlinterp)
+add_cython_target(_mlinterpy _mlinterpy.pyx)
+add_library(_mlinterpy MODULE ${_mlinterpy})
+python_extension_module(_mlinterpy)
 
-target_link_libraries(_mlinterp mlinterp_c_api)
-target_include_directories(_mlinterp PUBLIC ${NumPy_INCLUDE_DIRS})
+target_link_libraries(_mlinterpy mlinterp_c_api)
+target_include_directories(_mlinterpy PUBLIC ${NumPy_INCLUDE_DIRS})
 
 if (SKBUILD)
-  install(TARGETS _mlinterp DESTINATION mlinterp)
+  install(TARGETS _mlinterpy DESTINATION mlinterpy)
 else()
-  install(TARGETS _mlinterp DESTINATION ${CMAKE_SOURCE_DIR}/mlinterp)
+  install(TARGETS _mlinterpy DESTINATION ${CMAKE_SOURCE_DIR}/mlinterpy)
 endif()
 
