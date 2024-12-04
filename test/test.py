@@ -31,7 +31,7 @@ def do_interp2(interp, inputs):
 def timefunc(func):
     timer = timeit.Timer(func)
     number, _ = timer.autorange()
-    np.maximum(number,1)
+    number = np.maximum(number,1)
     return timer.timeit(number=number)/number
 
 def do_test(gridvals, n, vectorized, time):
