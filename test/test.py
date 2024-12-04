@@ -10,21 +10,21 @@ def make_data(gridvals):
     return vals
 
 def make_inputs(gridvals, n):
-    inputs = np.empty((len(gridvals),n))
+    inputs = np.empty((n,len(gridvals)))
     for i,val in enumerate(gridvals):   
-        inputs[i,:] = np.random.uniform(val[0],val[-1],size=inputs.shape[1])
+        inputs[:,i] = np.random.uniform(val[0],val[-1],size=inputs.shape[0])
     return inputs
 
 def do_interp1(interp, inputs):
-    res = np.empty(inputs.shape[1])
-    for i in range(inputs.shape[1]):
-        res[i] = interp(inputs[:,i].copy())[0]
+    res = np.empty(inputs.shape[0])
+    for i in range(inputs.shape[0]):
+        res[i] = interp(inputs[i,:].copy())[0]
     return res
 
 def do_interp2(interp, inputs):
-    res = np.empty(inputs.shape[1])
-    for i in range(inputs.shape[1]):
-        res[i] = interp(inputs[:,i].copy())
+    res = np.empty(inputs.shape[0])
+    for i in range(inputs.shape[0]):
+        res[i] = interp(inputs[i,:].copy())
     return res
 
 def do_test(gridvals, n):
