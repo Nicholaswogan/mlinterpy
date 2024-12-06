@@ -3,7 +3,7 @@ import numpy as np
 cimport numpy as np
 from libc.stdlib cimport malloc, free
 
-cdef extern void interp_wrapper(
+cdef extern int interp_wrapper(
   int n, int *nd, double **xd, double *fd,
   int ni, double *xi, double *fi
 )
@@ -117,10 +117,13 @@ cdef class RegularGridInterpolator:
       xi_copy = np.ascontiguousarray(xi)
       xi_p = <double *> xi_copy.data
 
-    interp_wrapper(
+    cdef int ierr = interp_wrapper(
       self.n, self.nd, self.xd, self.fd, 
       ni, xi_p, <double *> fi.data
     )
+    if ierr:
+      raise Exception('Memory allocation failed.')
+
     return fi
 
   def evaluate(self, ndarray[double, ndim=1] xi):
@@ -149,10 +152,13 @@ cdef class RegularGridInterpolator:
       xi_copy = np.ascontiguousarray(xi)
       xi_p = <double *> xi_copy.data
 
-    interp_wrapper(
+    cdef int ierr = interp_wrapper(
       self.n, self.nd, self.xd, self.fd, 
       1, xi_p, &fi
     )
+    if ierr:
+      raise Exception('Memory allocation failed.')
+    
     return fi
 
   def __call__(self, ndarray xi):

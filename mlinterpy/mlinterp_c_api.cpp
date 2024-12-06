@@ -122,11 +122,13 @@ int interp_general(
   return 0;
 }
 
-void interp_wrapper(
+int interp_wrapper(
   int ndim, const int *nd, double **xd, double *fd,
   int ni, const double *xi, double *fi
 )
 {
+
+  int ierr = 0;
 
   switch (ndim)
   {
@@ -246,12 +248,13 @@ void interp_wrapper(
       );
       break;
     default:
-      int ierr = interp_general(
+      ierr = interp_general(
         ndim, nd, xd, fd,
         ni, xi, fi
       );
   }
 
+  return ierr;
 }
 
 }
