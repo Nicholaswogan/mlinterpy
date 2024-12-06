@@ -90,7 +90,8 @@ def test():
     x8 = np.arange(2.0, 11.0, 3.0)
     x9 = np.arange(-20.0, 6.0, 5.0)
     x10 = np.arange(1.0, 10.0, 2.0)
-    all_gridvals = (x1,x2,x3,x4,x5,x6,x7,x8,x9,x10)
+    x11 = np.arange(1.0, 6.0, 2.0)
+    all_gridvals = (x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11)
 
     if time:
         fmt = '{:16}'

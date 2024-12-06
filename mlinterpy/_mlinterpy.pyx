@@ -51,8 +51,6 @@ cdef class RegularGridInterpolator:
 
   def __init__(self, tuple points, ndarray values):
     self.n = len(points)
-    if self.n > 10:
-      raise ValueError('`RegularGridInterpolator` can not interpolate greater than 10 dimensions.')
     self.nd = <int *> malloc(self.n * sizeof(int))
     self.xd = <double **> malloc(self.n * sizeof(double*))
 
@@ -63,6 +61,7 @@ cdef class RegularGridInterpolator:
       tmp = points[i]
       tmp_p = <double *> tmp.data
       self.nd[i] = points[i].shape[0]
+      assert self.nd[i] > 0, "All arrays in input `points` must be longer than 0."
       assert self.nd[i] == values.shape[i], "Input `points` and `values` have incompatible shapes"
       self.xd[i] = <double *> malloc(self.nd[i] * sizeof(double))
       for j in range(self.nd[i]):
