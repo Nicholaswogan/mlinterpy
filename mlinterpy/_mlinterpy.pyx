@@ -95,12 +95,14 @@ cdef class RegularGridInterpolator:
     Parameters
     ----------
     xi : ndarray[double, ndim=2]
-        The coordinates to evaluate the interpolator at.
+        The coordinates to evaluate the interpolator at. `xi` should
+        have shape `(ndim,ni)`, where `ndim` is the number of dimensions,
+        and `ni` is the number of points to do interpolation at.
 
     Returns
     -------
     fi : ndarray[double, ndim=1]
-        Interpolated values at `xi`.
+        Interpolated values at `xi`. `fi` has shape `xi.shape[1]`.
     """
 
     cdef int ni = xi.shape[1]
