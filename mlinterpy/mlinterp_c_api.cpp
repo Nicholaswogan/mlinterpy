@@ -252,18 +252,6 @@ void interp_wrapper(
       );
   }
 
-  // Check for out of bounds
-  for (int j = 0; j < ni; j++) {
-    for (int i = 0; i < ndim; i++) {
-      double xij = xi[j + i*ni];
-      if (xij < xd[i][0] or xij > xd[i][nd[i]-1])
-      {
-        fi[j] = NAN;
-        break;
-      }
-    }
-  }
-
 }
 
 }
