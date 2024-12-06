@@ -60,7 +60,8 @@ def do_test(gridvals, n, vectorized, time):
         t2_init = timefunc(tmp)
 
     if vectorized:
-        tmp = lambda: interp2(inputs)
+        inputs1 = np.ascontiguousarray(inputs.T)
+        tmp = lambda: interp2(inputs1)
     else:
         tmp = lambda: do_interp2(interp2, inputs)
 

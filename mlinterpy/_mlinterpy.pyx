@@ -3,14 +3,9 @@ import numpy as np
 cimport numpy as np
 from libc.stdlib cimport malloc, free
 
-cdef extern void interp_vector(
+cdef extern void interp_wrapper(
   int n, int *nd, double **xd, double *fd,
   int ni, double *xi, double *fi
-)
-
-cdef extern void interp_single(
-  int n, int *nd, double **xd, double *fd,
-  double *xi, double *fi
 )
 
 cdef is_sorted(int n, double *a):
@@ -108,8 +103,8 @@ cdef class RegularGridInterpolator:
         Interpolated values at `xi`.
     """
 
-    cdef int ni = xi.shape[0]
-    assert xi.shape[1] == self.n, "Input `xi` has the wrong dimension"
+    cdef int ni = xi.shape[1]
+    assert xi.shape[0] == self.n, "Input `xi` has the wrong dimension"
     cdef ndarray[double,ndim=1] fi = np.empty(ni,np.double)
 
     cdef double *xi_p
@@ -120,7 +115,7 @@ cdef class RegularGridInterpolator:
       xi_copy = np.ascontiguousarray(xi)
       xi_p = <double *> xi_copy.data
 
-    interp_vector(
+    interp_wrapper(
       self.n, self.nd, self.xd, self.fd, 
       ni, xi_p, <double *> fi.data
     )
@@ -152,9 +147,9 @@ cdef class RegularGridInterpolator:
       xi_copy = np.ascontiguousarray(xi)
       xi_p = <double *> xi_copy.data
 
-    interp_single(
+    interp_wrapper(
       self.n, self.nd, self.xd, self.fd, 
-      xi_p, &fi
+      1, xi_p, &fi
     )
     return fi
 
@@ -182,6 +177,6 @@ cdef class RegularGridInterpolator:
     elif xi.ndim == 2:
       fi = self.evaluate_vector(xi)
     else:
-      raise ValueError("`xi` must have 1 or two dimensions.")
+      raise ValueError("`xi` must have 1 or 2 dimensions.")
 
     return fi

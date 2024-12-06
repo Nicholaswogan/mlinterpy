@@ -16,8 +16,9 @@ inline int mux(int dimension, const int *nd, const int *indices) {
     return index;
 }
 
-inline void run(int ndim, const int *nd, double **xd, 
-  int n, const double *xi,
+inline void run(
+  int ndim, const int *nd, double **xd, 
+  int n, const int ni, const double *xi,
   int *indices, double *weights)
 {
 
@@ -26,7 +27,7 @@ inline void run(int ndim, const int *nd, double **xd,
   int mid;
 
   for (int i = 0; i < ndim; i++){
-    x = xi[i + n*ndim];
+    x = xi[n + i*ni];
     xdi = xd[i];
     if (nd[i] == 1 || x <= xdi[0]) {
       // Data point is less than left boundary
@@ -94,7 +95,7 @@ int interp_general(
     yi[n] = 0.0;
     run(
       ndim, nd, xd, 
-      n, xi,
+      n, ni, xi,
       indices, weights
     );
     for (int bitstr = 0; bitstr < power; ++bitstr) {
@@ -121,25 +122,13 @@ int interp_general(
   return 0;
 }
 
-void interp_single(
-  int n, int *nd, double **xd, double *fd,
-  double *xi, double *fi
+void interp_wrapper(
+  int ndim, const int *nd, double **xd, double *fd,
+  int ni, const double *xi, double *fi
 )
 {
 
-  // First, check for out of bounds
-  for (int i = 0; i < n; i++)
-  {
-    if (xi[i] < xd[i][0] or xi[i] > xd[i][nd[i]-1])
-    {
-      *fi = NAN;
-      return;
-    }
-  }
-
-  // Next, interpolate
-  const int ni = 1;
-  switch (n)
+  switch (ndim)
   {
     case 1:
       interp(
@@ -152,127 +141,127 @@ void interp_single(
       interp(
         nd, ni,
         fd, fi,
-        xd[0], &xi[0], 
-        xd[1], &xi[1]
+        xd[0], &xi[0*ni], 
+        xd[1], &xi[1*ni]
       );
       break;
     case 3:
       interp(
         nd, ni,
         fd, fi,
-        xd[0], &xi[0], 
-        xd[1], &xi[1], 
-        xd[2], &xi[2]
+        xd[0], &xi[0*ni], 
+        xd[1], &xi[1*ni], 
+        xd[2], &xi[2*ni]
       );
       break;
     case 4:
       interp(
         nd, ni,
         fd, fi,
-        xd[0], &xi[0], 
-        xd[1], &xi[1], 
-        xd[2], &xi[2], 
-        xd[3], &xi[3]
+        xd[0], &xi[0*ni], 
+        xd[1], &xi[1*ni], 
+        xd[2], &xi[2*ni], 
+        xd[3], &xi[3*ni]
       );
       break;
     case 5:
       interp(
         nd, ni,
         fd, fi,
-        xd[0], &xi[0], 
-        xd[1], &xi[1], 
-        xd[2], &xi[2], 
-        xd[3], &xi[3], 
-        xd[4], &xi[4]
+        xd[0], &xi[0*ni], 
+        xd[1], &xi[1*ni], 
+        xd[2], &xi[2*ni], 
+        xd[3], &xi[3*ni], 
+        xd[4], &xi[4*ni]
       );
       break;
     case 6:
       interp(
         nd, ni,
         fd, fi,
-        xd[0], &xi[0], 
-        xd[1], &xi[1], 
-        xd[2], &xi[2], 
-        xd[3], &xi[3], 
-        xd[4], &xi[4], 
-        xd[5], &xi[5]
+        xd[0], &xi[0*ni], 
+        xd[1], &xi[1*ni], 
+        xd[2], &xi[2*ni], 
+        xd[3], &xi[3*ni], 
+        xd[4], &xi[4*ni], 
+        xd[5], &xi[5*ni]
       );
       break;
     case 7:
       interp(
         nd, ni,
         fd, fi,
-        xd[0], &xi[0], 
-        xd[1], &xi[1], 
-        xd[2], &xi[2], 
-        xd[3], &xi[3], 
-        xd[4], &xi[4], 
-        xd[5], &xi[5], 
-        xd[6], &xi[6]
+        xd[0], &xi[0*ni], 
+        xd[1], &xi[1*ni], 
+        xd[2], &xi[2*ni], 
+        xd[3], &xi[3*ni], 
+        xd[4], &xi[4*ni], 
+        xd[5], &xi[5*ni], 
+        xd[6], &xi[6*ni]
       );
       break;
     case 8:
       interp(
         nd, ni,
         fd, fi,
-        xd[0], &xi[0], 
-        xd[1], &xi[1], 
-        xd[2], &xi[2], 
-        xd[3], &xi[3], 
-        xd[4], &xi[4], 
-        xd[5], &xi[5], 
-        xd[6], &xi[6], 
-        xd[7], &xi[7]
+        xd[0], &xi[0*ni], 
+        xd[1], &xi[1*ni], 
+        xd[2], &xi[2*ni], 
+        xd[3], &xi[3*ni], 
+        xd[4], &xi[4*ni], 
+        xd[5], &xi[5*ni], 
+        xd[6], &xi[6*ni], 
+        xd[7], &xi[7*ni]
       );
       break;
     case 9:
       interp(
         nd, ni,
         fd, fi,
-        xd[0], &xi[0], 
-        xd[1], &xi[1], 
-        xd[2], &xi[2], 
-        xd[3], &xi[3], 
-        xd[4], &xi[4], 
-        xd[5], &xi[5], 
-        xd[6], &xi[6], 
-        xd[7], &xi[7], 
-        xd[8], &xi[8]
+        xd[0], &xi[0*ni], 
+        xd[1], &xi[1*ni], 
+        xd[2], &xi[2*ni], 
+        xd[3], &xi[3*ni], 
+        xd[4], &xi[4*ni], 
+        xd[5], &xi[5*ni], 
+        xd[6], &xi[6*ni], 
+        xd[7], &xi[7*ni], 
+        xd[8], &xi[8*ni]
       );
       break;
     case 10:
       interp(
         nd, ni,
         fd, fi,
-        xd[0], &xi[0], 
-        xd[1], &xi[1], 
-        xd[2], &xi[2], 
-        xd[3], &xi[3], 
-        xd[4], &xi[4], 
-        xd[5], &xi[5], 
-        xd[6], &xi[6], 
-        xd[7], &xi[7], 
-        xd[8], &xi[8], 
-        xd[9], &xi[9]
+        xd[0], &xi[0*ni], 
+        xd[1], &xi[1*ni], 
+        xd[2], &xi[2*ni], 
+        xd[3], &xi[3*ni], 
+        xd[4], &xi[4*ni], 
+        xd[5], &xi[5*ni], 
+        xd[6], &xi[6*ni], 
+        xd[7], &xi[7*ni], 
+        xd[8], &xi[8*ni], 
+        xd[9], &xi[9*ni]
       );
       break;
     default:
       int ierr = interp_general(
-        n, nd, xd, fd,
+        ndim, nd, xd, fd,
         ni, xi, fi
       );
   }
-}
 
-void interp_vector(
-  int n, int *nd, double **xd, double *fd,
-  int ni, double *xi, double *fi
-)
-{
-
-  for (int i = 0; i < ni; i++)
-  {
-    interp_single(n, nd, xd, fd, &xi[i*n], &fi[i]);
+  // Check for out of bounds
+  for (int j = 0; j < ni; j++) {
+    for (int i = 0; i < ndim; i++) {
+      double xij = xi[j + i*ni];
+      if (xij < xd[i][0] or xij > xd[i][nd[i]-1])
+      {
+        fi[j] = NAN;
+        break;
+      }
+    }
   }
 
 }
