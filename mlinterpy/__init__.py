@@ -1,1 +1,1 @@
-from ._mlinterpy import RegularGridInterpolator
+from ._mlinterpy import MultiLinearInterpolator

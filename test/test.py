@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import interpolate
-from mlinterpy import RegularGridInterpolator
+from mlinterpy import MultiLinearInterpolator
 from copy import deepcopy
 import timeit
 
@@ -54,7 +54,7 @@ def do_test(gridvals, n, vectorized, time):
     if time:
         t1_calc = timefunc(tmp)
 
-    tmp = lambda: RegularGridInterpolator(gridvals, vals)
+    tmp = lambda: MultiLinearInterpolator(gridvals, vals)
     interp2 = tmp()
     if time:
         t2_init = timefunc(tmp)

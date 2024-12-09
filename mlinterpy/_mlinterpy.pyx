@@ -15,28 +15,24 @@ cdef is_sorted(int n, double *a):
           return False
   return True
 
-cdef class RegularGridInterpolator:
+cdef class MultiLinearInterpolator:
   """
-  Interpolator on a regular or rectilinear grid in up to 10 dimensions.
-
-  The data must be defined on a rectilinear grid; that is, a rectangular
-  grid with even or uneven spacing. Only linear interpolation is
-  supported.
+  Linear Interpolator on a regular grid in up to 10 dimensions.
 
   Parameters
   ----------
   points : tuple of ndarray of float, with shapes (m1, ), ..., (mn, )
       The points defining the regular grid in n dimensions. The points in
       each dimension (i.e. every elements of the points tuple) must be
-      strictly ascending or descending.
+      strictly ascending.
 
   values : ndarray, shape (m1, ..., mn, ...)
       The data on the regular grid in n dimensions.
   """
 
-  cdef double** xd
-  cdef int n
+  cdef int ndim
   cdef int* nd
+  cdef double** xd
   cdef double* fd
 
   def __cinit__(self, *args, **kwargs):
@@ -44,15 +40,15 @@ cdef class RegularGridInterpolator:
     self.nd = NULL
     self.fd = NULL
 
-  def __init__(self, tuple points, ndarray values):
-    self.n = len(points)
-    self.nd = <int *> malloc(self.n * sizeof(int))
-    self.xd = <double **> malloc(self.n * sizeof(double*))
+  def __init__(self, points, ndarray values):
+    self.ndim = len(points)
+    self.nd = <int *> malloc(self.ndim * sizeof(int))
+    self.xd = <double **> malloc(self.ndim * sizeof(double*))
 
     cdef sort
     cdef ndarray[double, ndim=1] tmp;
     cdef double *tmp_p;
-    for i in range(self.n):
+    for i in range(self.ndim):
       tmp = points[i]
       tmp_p = <double *> tmp.data
       self.nd[i] = points[i].shape[0]
@@ -80,7 +76,7 @@ cdef class RegularGridInterpolator:
     
   def __dealloc__(self):
     if self.xd:
-      for i in range(self.n):
+      for i in range(self.ndim):
         free(self.xd[i])
       free(self.xd)
     if self.nd: 
@@ -106,7 +102,7 @@ cdef class RegularGridInterpolator:
     """
 
     cdef int ni = xi.shape[1]
-    assert xi.shape[0] == self.n, "Input `xi` has the wrong dimension"
+    assert xi.shape[0] == self.ndim, "Input `xi` has the wrong dimension"
     cdef ndarray[double,ndim=1] fi = np.empty(ni,np.double)
 
     cdef double *xi_p
@@ -118,7 +114,7 @@ cdef class RegularGridInterpolator:
       xi_p = <double *> xi_copy.data
 
     cdef int ierr = interp_wrapper(
-      self.n, self.nd, self.xd, self.fd, 
+      self.ndim, self.nd, self.xd, self.fd, 
       ni, xi_p, <double *> fi.data
     )
     if ierr:
@@ -141,7 +137,7 @@ cdef class RegularGridInterpolator:
         Interpolated value at `xi`.
     """
 
-    assert xi.shape[0] == self.n, "Input `xi` has the wrong dimension"
+    assert xi.shape[0] == self.ndim, "Input `xi` has the wrong dimension"
     cdef double fi
 
     cdef double *xi_p
@@ -153,7 +149,7 @@ cdef class RegularGridInterpolator:
       xi_p = <double *> xi_copy.data
 
     cdef int ierr = interp_wrapper(
-      self.n, self.nd, self.xd, self.fd, 
+      self.ndim, self.nd, self.xd, self.fd, 
       1, xi_p, &fi
     )
     if ierr:
@@ -161,7 +157,7 @@ cdef class RegularGridInterpolator:
     
     return fi
 
-  def __call__(self, ndarray xi):
+  def call(self, ndarray xi):
     """
     Interpolation at coordinates.
 
@@ -188,3 +184,19 @@ cdef class RegularGridInterpolator:
       raise ValueError("`xi` must have 1 or 2 dimensions.")
 
     return fi
+  
+  def __call__(self, ndarray xi):
+    """
+    Interpolation at coordinates.
+
+    Parameters
+    ----------
+    xi : ndarray
+        The coordinates to evaluate the interpolator at.
+
+    Returns
+    -------
+    fi : ndarray[double, ndim=1]
+        Interpolated values at `xi`.
+    """
+    return self.call(xi)
