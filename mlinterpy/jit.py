@@ -1,13 +1,11 @@
+from . import _mlinterpy
 import numba as nb
 from numba import types
 import numpy as np
 import ctypes as ct
-import os
 
 def make_interp_wrapper():
-    rootdir = os.path.dirname(os.path.realpath(__file__))+'/'
-    name = [a for a in os.listdir(rootdir) if '.so' in a][0]
-    lib = ct.CDLL(rootdir+name)
+    lib = ct.CDLL(_mlinterpy.__file__)
     interp_wrapper = lib.interp_wrapper
     interp_wrapper.argtypes = [
         ct.c_int,    # int ndim
@@ -105,7 +103,6 @@ def _evaluate_vector(self, xi):
         raise Exception('Memory allocation failed.')
     
     return fi
-
 
 _signature = types.double(
     MultiLinearInterpolator.class_type.instance_type,
