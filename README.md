@@ -51,13 +51,11 @@ def test():
 
 assert np.isclose(test_scipy(),test())
 
-timer = timeit.Timer(test_scipy)
-n, _ = timer.autorange()
-t_scipy = timer.timeit(number=n)/n
+n, t = timeit.Timer(test_scipy).autorange()
+t_scipy = t/n
 
-timer = timeit.Timer(test)
-n, _ = timer.autorange()
-t = timer.timeit(number=n)/n
+n, t = timeit.Timer(test).autorange()
+t = t/n
 
 print('mlinterpy is %i times faster than scipy'%(t_scipy/t))
 ```
