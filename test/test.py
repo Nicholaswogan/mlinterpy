@@ -30,9 +30,8 @@ def do_interp2(interp, inputs):
 
 def timefunc(func):
     timer = timeit.Timer(func)
-    number, _ = timer.autorange()
-    number = np.maximum(number,1)
-    return timer.timeit(number=number)/number
+    number, t = timer.autorange()
+    return t/number
 
 def do_test(gridvals, n, vectorized, time):
     np.random.seed(0)
@@ -61,7 +60,7 @@ def do_test(gridvals, n, vectorized, time):
 
     if vectorized:
         inputs1 = np.ascontiguousarray(inputs.T)
-        tmp = lambda: interp2(inputs1)
+        tmp = lambda: interp2.call(inputs1)
     else:
         tmp = lambda: do_interp2(interp2, inputs)
 
