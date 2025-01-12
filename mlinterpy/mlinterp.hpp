@@ -164,6 +164,48 @@ static void interp(const Index *nd, Index ni, const T *yd, T *yi,
   }
 }
 
+template <typename Order = natord, typename... Args, typename T, typename Index>
+static void interp_array(const Index *nd, Index arr_size, const T **yd, T *yi,
+                         Args... args) {
+
+  // Infer dimension from arguments
+  static_assert(sizeof...(Args) % 2 == 0, "needs 4+2*Dimension arguments");
+  constexpr Index Dimension = sizeof...(Args) / 2;
+
+  // Compute 2^Dimension
+  constexpr Index Power = 1 << Dimension;
+
+  // Unpack arguments
+  helper<T, Args...> h(args...);
+
+  // Perform interpolation for each point
+  Index indices[Dimension];
+  T weights[Dimension];
+  Index buffer[Dimension];
+  T factor;
+  h.run(nd, 0, indices, weights);
+
+  for (Index n = 0; n < arr_size; ++n) {
+    yi[n] = 0.;
+    for (Index bitstr = 0; bitstr < Power; ++bitstr) {
+      factor = 1.;
+      for (Index i = 0; i < Dimension; ++i) {
+        if (bitstr & (1 << i)) {
+          buffer[i] = indices[i];
+          factor *= weights[i];
+        } else {
+          buffer[i] = indices[i] + 1;
+          factor *= 1 - weights[i];
+        }
+      }
+      if (factor > std::numeric_limits<T>::epsilon()) {
+        const Index k = Order::template mux<Index, Dimension>(nd, buffer);
+        yi[n] += factor * yd[n][k];
+      }
+    }
+  }
+}
+
 } // namespace mlinterp
 
 #endif

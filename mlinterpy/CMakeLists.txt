@@ -33,3 +33,15 @@ else()
   install(TARGETS _mlinterpy DESTINATION ${CMAKE_SOURCE_DIR}/mlinterpy)
 endif()
 
+add_cython_target(_rgi_cython _rgi_cython.pyx)
+add_library(_rgi_cython MODULE ${_rgi_cython})
+python_extension_module(_rgi_cython)
+
+target_include_directories(_rgi_cython PUBLIC ${NumPy_INCLUDE_DIRS})
+
+if (SKBUILD)
+  install(TARGETS _rgi_cython DESTINATION mlinterpy)
+else()
+  install(TARGETS _rgi_cython DESTINATION ${CMAKE_SOURCE_DIR}/mlinterpy)
+endif()
+
